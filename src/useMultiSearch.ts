@@ -95,13 +95,13 @@ export type MultiSearchOptions<T extends Record<string, unknown>> = {
   /**
    * Label for `true` value on search suggestions.
    *
-   * @default 'Yes'
+   * @default Yes
    */
   trueLabel?: string;
   /**
    * Label for `false` value on search suggestions.
    *
-   * @default 'No'
+   * @default No
    */
   falseLabel?: string;
 } & IsQueryMatchOptions;
