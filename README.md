@@ -411,3 +411,13 @@ See the [demo code](https://github.com/franz-dc/react-multi-search/blob/main/sto
 
   - `string`
   - Query string to match.
+
+## Contributing
+
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+Before submitting a pull request, please make sure to test your changes and update the documentation if necessary.
+
+## License
+
+This project is licensed under the [MIT License](https://github.com/franz-dc/react-multi-search/blob/main/LICENSE)
