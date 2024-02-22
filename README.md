@@ -49,43 +49,133 @@ yarn add react-multi-search
 
 ## Usage
 
-```tsx
-// Under construction
-
+```jsx
 import { useState } from 'react';
 import { useMultiSearch } from 'react-multi-search';
 
 const MyComponent = () => {
-  const [filteredData, setFilteredData] = useState(initialData);
+  const initialData = [
+    { name: 'John Doe', age: 20, gender: 'Male' },
+    { name: 'Jane Doe', age: 25, gender: 'Female' },
+    // ...
+  ];
+
+  const [filteredData, setFilteredData] = useState([]);
+
   const {
-    actions: {},
+    states: {
+      searchString,
+      searchField,
+      searchSuggestions,
+      searchQueries,
+      isMenuOpen,
+      shownMenu,
+    },
+    actions: {
+      clearInput,
+      addSearchQuery,
+      deleteSearchQuery,
+      deleteAllSearchQueries,
+      onMenuKeyDown,
+      onSearchFieldSelect,
+      onAllSearchFieldSelect,
+      onSearchSuggestionSelect,
+      openMenu,
+    },
     inputProps,
     anchorRef,
     listRef,
   } = useMultiSearch({
-    initialData,
+    initialData: [ ... ],
     setFilteredData,
     fields: [
       { value: 'name', label: 'Name' },
       { value: 'age', label: 'Age' },
-      { value: 'isStudent', label: 'Is Student' },
+      { value: 'gender', label: 'Gender', showSearchSuggestions: true },
     ],
   });
 
   return (
-    <div ref={anchorRef}>
-      <input {...inputProps} />
-      <ul ref={listRef}>
-        {isMenuOpen && (
-          <li>
-            <button onClick={addSearchQuery}>Add</button>
+    <>
+      {/* search bar ------------------------------------------------------- */}
+      <div ref={anchorRef}>
+        <button onClick={openMenu}>{searchField.label || 'All'}</button>
+        <input {...inputProps} />
+        <button onClick={clearInput}>Clear</button>
+        <button onClick={addSearchQuery}>Add</button>
+      </div>
+
+      {/* search queries --------------------------------------------------- */}
+      <ul
+        style={{
+          listStyle: 'none',
+          padding: 0,
+        }}
+      >
+        {searchQueries.map((query, index) => (
+          <li key={index}>
+            <span>
+              {query.field === '_default'
+                ? query.value
+                : `${query.fieldLabel}: ${query.value}`}
+            </span>
+            <button onClick={() => deleteSearchQuery(index)}>Remove</button>
           </li>
-        )}
+        ))}
       </ul>
-    </div>
+      <button onClick={deleteAllSearchQueries}>Clear all queries</button>
+
+      {/* dropdown menu ---------------------------------------------------- */}
+      {isMenuOpen && (
+        <div>
+          <ul ref={listRef} onKeyDown={onMenuKeyDown}>
+            {shownMenu === 'fields' && (
+              <>
+                <li>Search by:</li>
+                <li>
+                  <button
+                    onClick={onAllSearchFieldSelect}
+                    disabled={searchField.value === '_default'}
+                  >
+                    All
+                  </button>
+                </li>
+                {...props.fields.map((field) => (
+                  <li key={field.value as string}>
+                    <button
+                      onClick={() => onSearchFieldSelect(field)}
+                      disabled={searchField.value === field.value}
+                    >
+                      {field.label}
+                    </button>
+                  </li>
+                ))}
+              </>
+            )}
+            {shownMenu === 'searchSuggestions' && (
+              <>
+                <li>Search suggestions:</li>
+                {searchSuggestions?.map(
+                  (value) => (
+                    <li key={value}>
+                      <button onClick={() => onSearchSuggestionSelect(value)}>
+                        {value}
+                      </button>
+                    </li>
+                  )
+                ) ?? <li>No suggestions</li>}
+              </>
+            )}
+          </ul>
+        </div>
+      )}
+      {/* ... */}
+    </>
   );
 };
 ```
+
+See the [demo code](https://github.com/franz-dc/react-multi-search/blob/main/stories/Basic.tsx) for a more comprehensive example.
 
 ## API
 
@@ -152,17 +242,13 @@ const MyComponent = () => {
 
 ### Field Options
 
-```ts
-fields: (FieldWithSuggestions<T> | FieldWithoutSuggestions<T>)[];
-```
-
-- `fields[number].value`\*
+- `fields[number].value` (required)
 
   - `{ [K in keyof T]: T[K] extends string | boolean ? K : never; }[keyof T]` for `FieldWithSuggestions<T>`
   - `{ [K in keyof T]: T[K] extends string | boolean ? never : K; }[keyof T]` for `FieldWithoutSuggestions<T>`
   - The field to search.
 
-- `fields[number].label`\*
+- `fields[number].label` (required)
 
   - `string`
   - The label for the field.
