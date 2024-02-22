@@ -301,6 +301,12 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
     }
   }, [initialData, searchSuggestions, searchField, trueLabel, falseLabel]);
 
+  const shownMenu: 'fields' | 'searchSuggestions' =
+    (searchField as FieldWithSuggestions<T>).showSearchSuggestions &&
+    inputRef.current === document.activeElement
+      ? 'searchSuggestions'
+      : 'fields';
+
   // Menu related props / event handlers
   const onMenuKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
     if (e.key === 'Tab') {
@@ -356,6 +362,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
     setIsFiltered(false);
     setSearchField({ value: '_default', label: '' });
     setIsMenuOpen(true);
+    inputRef.current?.focus();
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
@@ -442,7 +449,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   };
 
   const onBlur = () => {
-    () => setIsExplicitAll(false);
+    setIsExplicitAll(false);
   };
 
   // Search query related props
@@ -459,6 +466,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
     setSearchString('');
     setSearchField({ value: '_default', label: '' });
     setIsMenuOpen(false);
+    inputRef.current?.focus();
   };
 
   const deleteSearchQuery = (idx: number) => {
@@ -496,6 +504,10 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
        * Dropdown menu open state.
        */
       isMenuOpen,
+      /**
+       * The type of dropdown menu currently shown.
+       */
+      shownMenu,
     },
     /**
      * Actions to interact with the search filter.

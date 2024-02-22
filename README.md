@@ -29,6 +29,10 @@ A react hook to filter data based on multiple search queries.
 
 _Other data types will be treated as strings._
 
+## Demo
+
+To see the hook in action, you can check the Storybook demo (under construction).
+
 ## Installation
 
 npm:
@@ -43,10 +47,44 @@ yarn:
 yarn add react-multi-search
 ```
 
-## Simple usage
+## Usage
 
 ```tsx
 // Under construction
+
+import { useState } from 'react';
+import { useMultiSearch } from 'react-multi-search';
+
+const MyComponent = () => {
+  const [filteredData, setFilteredData] = useState(initialData);
+  const {
+    actions: {},
+    inputProps,
+    anchorRef,
+    listRef,
+  } = useMultiSearch({
+    initialData,
+    setFilteredData,
+    fields: [
+      { value: 'name', label: 'Name' },
+      { value: 'age', label: 'Age' },
+      { value: 'isStudent', label: 'Is Student' },
+    ],
+  });
+
+  return (
+    <div ref={anchorRef}>
+      <input {...inputProps} />
+      <ul ref={listRef}>
+        {isMenuOpen && (
+          <li>
+            <button onClick={addSearchQuery}>Add</button>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+};
 ```
 
 ## API
@@ -62,7 +100,7 @@ yarn add react-multi-search
 
   - `Dispatch<SetStateAction<T[]>> | Dispatch<SetStateAction<Record<string, T[]>>>`
   - setState function to update the filtered data.
-  - Since this is a headless hook, the filtered data should be managed by the consuming component.
+  - Since this is a headless hook, the filtered data should be managed by the consuming component for reusability.
 
 - [`fields`](#field-options) (required)
 
@@ -169,6 +207,11 @@ fields: (FieldWithSuggestions<T> | FieldWithoutSuggestions<T>)[];
 
     - `boolean`
     - Dropdown menu open state.
+
+  - `shownMenu`
+
+    - `'fields' | 'searchSuggestions'`
+    - The type of dropdown menu currently shown.
 
 - `actions` - Actions to interact with the search filter.
 
