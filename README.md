@@ -53,18 +53,18 @@ yarn add react-multi-search
 
 ### Options
 
-- `initialData`\*
+- `initialData` (required)
 
   - `T[]`
   - The initial data to filter. This should be an array of objects without categorization. If you want to categorize your data, use the separate `categorizer` function.
 
-- `setFilteredData`\*
+- `setFilteredData` (required)
 
   - `Dispatch<SetStateAction<T[]>> | Dispatch<SetStateAction<Record<string, T[]>>>`
   - setState function to update the filtered data.
   - Since this is a headless hook, the filtered data should be managed by the consuming component.
 
-- [`fields`\*](#field-options)
+- [`fields`](#field-options) (required)
 
   - `(FieldWithSuggestions<T> | FieldWithoutSuggestions<T>)[]`
   - The fields to search in. Each item in the array can be of type `FieldWithSuggestions<T>` where all keys should have the value of type `string` or `boolean`, or `FieldWithoutSuggestions<T>` for other data types.
@@ -111,8 +111,6 @@ yarn add react-multi-search
   - `string[]`
   - Defaults to `['false', '0', 'off', 'no', 'n', 'f', 'x']`
   - A list of falsy values to match against boolean values.
-
-\* _Required_
 
 ### Field Options
 
