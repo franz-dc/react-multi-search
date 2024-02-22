@@ -2,6 +2,11 @@
 
 A react hook to filter data based on multiple search queries.
 
+![NPM License](https://img.shields.io/npm/l/react-multi-search)
+![NPM Version](https://img.shields.io/npm/v/react-multi-search)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-multi-search)
+![NPM Type Definitions](https://img.shields.io/npm/types/react-multi-search)
+
 ## Features
 
 - 🗃️ Support for various data types
@@ -31,7 +36,7 @@ _Other data types will be treated as strings._
 
 ## Demo
 
-To see the hook in action, you can check the Storybook demo (under construction).
+To see the hook in action, you can check the [Storybook demo](https://franz-dc.github.io/react-multi-search).
 
 ## Installation
 
