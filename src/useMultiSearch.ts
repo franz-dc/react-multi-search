@@ -62,7 +62,7 @@ export type FieldWithoutSuggestions<T extends Record<string, unknown>> = {
   label: string;
 };
 
-export type SearchFilterParams<T extends Record<string, unknown>> = {
+export type MultiSearchParams<T extends Record<string, unknown>> = {
   /**
    * The initial data to filter.
    */
@@ -132,7 +132,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   trueLabel = 'Yes',
   falseLabel = 'No',
   ...isQueryMatchOptions
-}: SearchFilterParams<T>) => {
+}: MultiSearchParams<T>) => {
   const categorizedInitialData = categorizer?.(initialData);
 
   // Search queries that are used to filter the data
@@ -228,7 +228,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   // Searchbar states to handle the input value.
   const [searchString, setSearchString] = useState('');
   const [searchField, setSearchField] = useState<
-    SearchFilterParams<T>['fields'][number] | { value: '_default'; label: '' }
+    MultiSearchParams<T>['fields'][number] | { value: '_default'; label: '' }
   >({
     value: '_default',
     label: '',
