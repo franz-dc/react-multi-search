@@ -34,7 +34,10 @@ const createData = (amount: number) =>
 
 type Schema = ReturnType<typeof createData>[number];
 
-const fields = [
+const fields: (
+  | FieldWithSuggestions<Schema>
+  | FieldWithoutSuggestions<Schema>
+)[] = [
   {
     value: 'name',
     label: 'Name',
@@ -63,7 +66,7 @@ const fields = [
     label: 'Employed',
     showSearchSuggestions: true,
   },
-] satisfies (FieldWithSuggestions<Schema> | FieldWithoutSuggestions<Schema>)[];
+];
 
 export type BasicProps = {
   test?: string;
