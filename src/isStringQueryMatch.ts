@@ -1,6 +1,8 @@
 export type IsStringQueryMatchOptions = {
   /**
-   * Whether the comparison should be case-sensitive.
+   * Whether the comparison should be case-sensitive or not.
+   *
+   * @default false
    */
   caseSensitive?: boolean;
 };

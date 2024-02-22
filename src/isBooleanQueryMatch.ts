@@ -1,10 +1,14 @@
 export type IsBooleanQueryMatchOptions = {
   /**
    * A list of truthy values to match against boolean values.
+   *
+   * @default ['true', '1', 'on', 'yes', 'y', 't', '✓']
    */
   truthyValues?: string[];
   /**
    * A list of falsy values to match against boolean values.
+   *
+   * @default ['false', '0', 'off', 'no', 'n', 'f', 'x']
    */
   falsyValues?: string[];
 };

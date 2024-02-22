@@ -76,14 +76,16 @@ export type MultiSearchParams<T extends Record<string, unknown>> = {
   /**
    * The fields to search.
    *
-   * `showSearchSuggestions` is optional and only applicable to string and boolean fields.
+   * `showSearchSuggestions` is optional and only applicable to string and boolean
+   * fields.
    */
   fields: (FieldWithSuggestions<T> | FieldWithoutSuggestions<T>)[];
   // ? Why setFilteredData gives an error when returning T[] in categorizer?
   /**
    * Function to categorize and group the filtered data.
    *
-   * This is not combined with `initialData` to optimize performance.
+   * This is separated from `initialData` to optimize performance when
+   * filtering.
    */
   categorizer?: (data: T[]) => Record<string, (T | Record<string, unknown>)[]>;
   /**
@@ -92,11 +94,13 @@ export type MultiSearchParams<T extends Record<string, unknown>> = {
   showEmptyCategories?: boolean;
   /**
    * Label for `true` value on search suggestions.
+   *
    * @default 'Yes'
    */
   trueLabel?: string;
   /**
    * Label for `false` value on search suggestions.
+   *
    * @default 'No'
    */
   falseLabel?: string;
@@ -489,7 +493,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
        */
       searchQueries,
       /**
-       * Menu open state.
+       * Dropdown menu open state.
        */
       isMenuOpen,
     },
