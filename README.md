@@ -91,7 +91,7 @@ const MyComponent = () => {
     anchorRef,
     listRef,
   } = useMultiSearch({
-    initialData: [ ... ],
+    initialData,
     setFilteredData,
     fields: [
       { value: 'name', label: 'Name' },
