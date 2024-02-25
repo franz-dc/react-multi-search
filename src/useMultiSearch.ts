@@ -147,6 +147,11 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   // Infinite loop workaround
   const [isFiltered, setIsFiltered] = useState(false);
 
+  // Reset filtered data when initial data changes
+  useEffect(() => {
+    setIsFiltered(false);
+  }, [initialData]);
+
   // Update the data when the search queries change
   useEffect(() => {
     if (isFiltered) return;
