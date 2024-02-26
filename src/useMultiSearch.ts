@@ -271,6 +271,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
 
   // Reset filtered data when initial data changes
   useEffect(() => {
+    setIsInitialized(false);
     setIsFiltered(false);
   }, [initialData]);
 
