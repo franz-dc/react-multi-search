@@ -296,9 +296,9 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
           ...prev,
           [searchField.value]: Array.from(
             new Set(
-              initialData.map(
-                (row) => row[searchField.value as string] as string
-              )
+              initialData
+                .map((row) => row[searchField.value as string] as string)
+                .filter(Boolean)
             )
           ),
         };
