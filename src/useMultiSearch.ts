@@ -137,6 +137,8 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   falseLabel = 'No',
   ...isQueryMatchOptions
 }: MultiSearchOptions<T>) => {
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const categorizedInitialData = categorizer?.(initialData);
 
   // Search queries that are used to filter the data
@@ -220,6 +222,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
           )
     );
 
+    setIsInitialized(true);
     setIsFiltered(true);
   }, [
     searchQueries,
@@ -517,6 +520,10 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
        * Whether the data is filtered or not.
        */
       isFiltered,
+      /**
+       * Whether the hook is initialized or not.
+       */
+      isInitialized,
     },
     /**
      * Actions to interact with the search filter.

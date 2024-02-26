@@ -1,6 +1,6 @@
 {
   "name": "react-multi-search",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A react hook to filter data based on various search queries.",
   "homepage": "https://franz-dc.github.io/react-multi-search",
   "main": "dist/cjs/index.js",
