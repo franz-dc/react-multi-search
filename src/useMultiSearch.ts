@@ -3,6 +3,7 @@ import {
   type ClipboardEvent,
   type Dispatch,
   type KeyboardEvent,
+  type RefObject,
   type SetStateAction,
   type SyntheticEvent,
   useEffect,
@@ -106,6 +107,125 @@ export type MultiSearchOptions<T extends Record<string, unknown>> = {
   falseLabel?: string;
 } & IsQueryMatchOptions;
 
+export type MultiSearch<T extends Record<string, unknown>> = {
+  /**
+   * Usable states for the search filter.
+   */
+  states: {
+    /**
+     * The current search string.
+     */
+    searchString: string;
+    /**
+     * Selected field to search.
+     */
+    searchField:
+      | FieldWithSuggestions<T>
+      | FieldWithoutSuggestions<T>
+      | {
+          value: '_default';
+          label: '';
+        };
+    /**
+     * Search suggestions for the selected field.
+     */
+    searchSuggestions: Record<keyof T, string[]>;
+    /**
+     * Current search queries.
+     */
+    searchQueries: SearchQuery<T>[];
+    /**
+     * Dropdown menu open state.
+     */
+    isMenuOpen: boolean;
+    /**
+     * The type of dropdown menu currently shown.
+     */
+    shownMenu: 'fields' | 'searchSuggestions';
+    /**
+     * Whether the data is filtered or not.
+     */
+    isFiltered: boolean;
+    /**
+     * Whether the hook is initialized or not.
+     */
+    isInitialized: boolean;
+  };
+  /**
+   * Actions to interact with the search filter.
+   */
+  actions: {
+    /**
+     * Trigger to clear the search string and selected field.
+     */
+    clearInput: () => void;
+    /**
+     * Trigger to add the current search string and field as a search query.
+     */
+    addSearchQuery: () => void;
+    /**
+     * Delete a search query by index.
+     */
+    deleteSearchQuery: (index: number) => void;
+    /**
+     * Delete all search queries.
+     */
+    deleteAllSearchQueries: () => void;
+    /**
+     * Event handler to handle key down events on the menu.
+     */
+    onMenuKeyDown: (e: KeyboardEvent<HTMLUListElement>) => void;
+    /**
+     * Event handler to handle field selection.
+     */
+    onSearchFieldSelect: (
+      field:
+        | FieldWithSuggestions<T>
+        | FieldWithoutSuggestions<T>
+        | {
+            value: '_default';
+            label: '';
+          }
+    ) => void;
+    /**
+     * Event handler to handle "All" field selection.
+     */
+    onAllSearchFieldSelect: () => void;
+    /**
+     * Event handler to handle search suggestion selection.
+     */
+    onSearchSuggestionSelect: (value: string) => void;
+    /**
+     * Open the dropdown menu.
+     */
+    openMenu: () => void;
+    /**
+     * Close the dropdown menu.
+     */
+    closeMenu: (event: Event | SyntheticEvent) => void;
+  };
+  /**
+   * Props passed to the input element (search bar).
+   */
+  inputProps: {
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown: (e: KeyboardEvent) => void;
+    onPaste: (e: ClipboardEvent) => void;
+    onFocus: () => void;
+    onBlur: () => void;
+    value: string;
+    ref: RefObject<HTMLInputElement>;
+  };
+  /**
+   * Ref forwarded to the anchor element (search bar wrapper).
+   */
+  anchorRef: RefObject<HTMLDivElement>;
+  /**
+   * Ref forwarded to the dropdown menu list element (`ul`).
+   */
+  listRef: RefObject<HTMLUListElement>;
+};
+
 /**
  * A hook to filter data based on multiple search queries.
  * All values are matched against all search queries (AND).
@@ -136,7 +256,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   trueLabel = 'Yes',
   falseLabel = 'No',
   ...isQueryMatchOptions
-}: MultiSearchOptions<T>) => {
+}: MultiSearchOptions<T>): MultiSearch<T> => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const categorizedInitialData = categorizer?.(initialData);
@@ -489,91 +609,28 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   };
 
   return {
-    /**
-     * Usable states for the search filter.
-     */
     states: {
-      /**
-       * The current search string.
-       */
       searchString,
-      /**
-       * Selected field to search.
-       */
       searchField,
-      /**
-       * Search suggestions for the selected field.
-       */
       searchSuggestions,
-      /**
-       * Current search queries.
-       */
       searchQueries,
-      /**
-       * Dropdown menu open state.
-       */
       isMenuOpen,
-      /**
-       * The type of dropdown menu currently shown.
-       */
       shownMenu,
-      /**
-       * Whether the data is filtered or not.
-       */
       isFiltered,
-      /**
-       * Whether the hook is initialized or not.
-       */
       isInitialized,
     },
-    /**
-     * Actions to interact with the search filter.
-     */
     actions: {
-      /**
-       * Trigger to clear the search string and selected field.
-       */
       clearInput,
-      /**
-       * Trigger to add the current search string and field as a search query.
-       */
       addSearchQuery,
-      /**
-       * Delete a search query by index.
-       */
       deleteSearchQuery,
-      /**
-       * Delete all search queries.
-       */
       deleteAllSearchQueries,
-      /**
-       * Event handler to handle key down events on the menu.
-       */
       onMenuKeyDown,
-      /**
-       * Event handler to handle field selection.
-       */
       onSearchFieldSelect,
-      /**
-       * Event handler to handle "All" field selection.
-       */
       onAllSearchFieldSelect,
-      /**
-       * Event handler to handle search suggestion selection.
-       */
       onSearchSuggestionSelect,
-      /**
-       * Open the dropdown menu.
-       */
       openMenu,
-      /**
-       * Close the dropdown menu.
-       */
       closeMenu,
     },
-    /**
-     * Props passed to the input element (search bar).
-     */
     inputProps: {
       onChange,
       onKeyDown,
@@ -583,13 +640,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
       value: searchString,
       ref: inputRef,
     },
-    /**
-     * Ref forwarded to the anchor element (search bar wrapper).
-     */
     anchorRef,
-    /**
-     * Ref forwarded to the dropdown menu list element (`ul`).
-     */
     listRef,
   };
 };
