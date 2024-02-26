@@ -163,6 +163,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
       // Just ignore the type error for now to avoid type gymnastics.
       // @ts-ignore
       setFilteredData(categorizedInitialData || initialData);
+      setIsInitialized(true);
       setIsFiltered(true);
       return;
     }
