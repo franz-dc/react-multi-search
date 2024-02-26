@@ -304,6 +304,11 @@ See the [demo code](https://github.com/franz-dc/react-multi-search/blob/main/sto
     - `'fields' | 'searchSuggestions'`
     - The type of dropdown menu currently shown.
 
+  - `isFiltered`
+
+    - `boolean`
+    - Whether the data is filtered or not.
+
 - `actions` - Actions to interact with the search filter.
 
   - `clearInput`

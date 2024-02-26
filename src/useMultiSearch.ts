@@ -513,6 +513,10 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
        * The type of dropdown menu currently shown.
        */
       shownMenu,
+      /**
+       * Whether the data is filtered or not.
+       */
+      isFiltered,
     },
     /**
      * Actions to interact with the search filter.
