@@ -174,6 +174,7 @@ const MyComponent = () => {
           </ul>
         </div>
       )}
+
       {/* ... */}
     </>
   );
@@ -214,6 +215,13 @@ See the [demo code](https://github.com/franz-dc/react-multi-search/blob/main/sto
   - Defaults to `false`.
   - Show categories that have no items.
   - This is only used when `categorizer` is provided.
+
+- `shouldInitialize`
+
+  - `boolean`
+  - Defaults to `true`.
+  - Control whether the hook should initialize or not.
+  - This is useful when you want to delay the initialization of the hook until the data is ready.
 
 - `caseSensitive`
 

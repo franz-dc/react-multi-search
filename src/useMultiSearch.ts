@@ -105,6 +105,13 @@ export type MultiSearchOptions<T extends Record<string, unknown>> = {
    * @default No
    */
   falseLabel?: string;
+  /**
+   * Control whether the hook should initialize or not.
+   *
+   * This is useful when you want to delay the initialization of the hook
+   * until the data is ready.
+   */
+  shouldInitialize?: boolean;
 } & IsQueryMatchOptions;
 
 export type MultiSearch<T extends Record<string, unknown>> = {
@@ -255,6 +262,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   showEmptyCategories,
   trueLabel = 'Yes',
   falseLabel = 'No',
+  shouldInitialize = true,
   ...isQueryMatchOptions
 }: MultiSearchOptions<T>): MultiSearch<T> => {
   const [isInitialized, setIsInitialized] = useState(false);
@@ -271,12 +279,14 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
 
   // Reset filtered data when initial data changes
   useEffect(() => {
+    if (!shouldInitialize) return;
     setIsInitialized(false);
     setIsFiltered(false);
-  }, [initialData]);
+  }, [initialData, shouldInitialize]);
 
   // Update the data when the search queries change
   useEffect(() => {
+    if (!shouldInitialize) return;
     if (isFiltered) return;
 
     if (searchQueries.length === 0) {
@@ -357,6 +367,7 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
     categorizer,
     showEmptyCategories,
     isQueryMatchOptions,
+    shouldInitialize,
   ]);
 
   // Searchbar states to handle the input value.
