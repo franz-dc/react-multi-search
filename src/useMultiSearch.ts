@@ -48,6 +48,12 @@ export type FieldWithSuggestions<T extends Record<string, unknown>> = {
    * Enclose suggestions in double quotes to treat as exact match.
    */
   strictSuggestions?: boolean;
+  /**
+   * The search suggestions for this field.
+   *
+   * If provided, it will be used instead of computing the suggestions.
+   */
+  searchSuggestions?: T[FieldWithSuggestions<T>['value']][];
 };
 
 export type FieldWithoutSuggestions<T extends Record<string, unknown>> = {
@@ -112,6 +118,16 @@ export type MultiSearchOptions<T extends Record<string, unknown>> = {
    * until the data is ready.
    */
   shouldInitialize?: boolean;
+  /**
+   * Default field to use when field is not specified.
+   *
+   * This will disable the global search functionality.
+   */
+  globalSearchReplacement?: keyof T;
+  /**
+   * Override existing queries with the same field.
+   */
+  overrideExistingQueriesWithSameField?: boolean;
 } & IsQueryMatchOptions;
 
 export type MultiSearch<T extends Record<string, unknown>> = {
@@ -263,6 +279,8 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
   trueLabel = 'Yes',
   falseLabel = 'No',
   shouldInitialize = true,
+  globalSearchReplacement,
+  overrideExistingQueriesWithSameField,
   ...isQueryMatchOptions
 }: MultiSearchOptions<T>): MultiSearch<T> => {
   const [isInitialized, setIsInitialized] = useState(false);
@@ -416,6 +434,16 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
       (searchField as FieldWithSuggestions<T>).showSearchSuggestions &&
       !searchSuggestions[searchField.value as string]
     ) {
+      // use provided search suggestions if available
+      if ((searchField as FieldWithSuggestions<T>).searchSuggestions) {
+        setSearchSuggestions((prev) => ({
+          ...prev,
+          [searchField.value]: (searchField as FieldWithSuggestions<T>)
+            .searchSuggestions!,
+        }));
+        return;
+      }
+
       setSearchSuggestions((prev) => {
         // Boolean fields
         if (
@@ -595,14 +623,26 @@ export const useMultiSearch = <T extends Record<string, unknown>>({
 
   // Search query related props
   const addSearchQuery = () => {
-    setSearchQueries((prev) => [
-      ...prev,
-      {
-        field: searchField.value as string,
-        fieldLabel: searchField.label,
-        value: searchString.trim(),
-      },
-    ]);
+    const newQuery = {
+      field:
+        globalSearchReplacement && searchField.value === '_default'
+          ? globalSearchReplacement
+          : (searchField.value as string),
+      fieldLabel:
+        globalSearchReplacement && searchField.value === '_default'
+          ? fields.find((f) => f.value === globalSearchReplacement)?.label || ''
+          : searchField.label,
+      value: searchString.trim(),
+    };
+
+    if (overrideExistingQueriesWithSameField) {
+      setSearchQueries((prev) =>
+        prev.filter((q) => q.field !== newQuery.field).concat(newQuery)
+      );
+    } else {
+      setSearchQueries((prev) => [...prev, newQuery]);
+    }
+
     setIsFiltered(false);
     setSearchString('');
     setSearchField({ value: '_default', label: '' });
